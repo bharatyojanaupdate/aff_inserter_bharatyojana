@@ -29,38 +29,31 @@
 
   const createBox = (title, url) => {
     const box = document.createElement("div");
-    box.className = "smart-aff-box";
     box.innerHTML = `
-      <div style="border:1px solid #ccc; background:#f9f9f9; padding:15px; margin:20px 0; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
+      <div style="border:1px solid #ccc; background:#fdf9f0; padding:15px; margin:20px 0; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
         <strong style="font-size:18px; color:#333;">${title}</strong><br><br>
-        <a href="${url}" target="_blank" style="background:#0073e6; color:white; padding:10px 16px; border-radius:6px; text-decoration:none; display:inline-block;">👉 Learn & Earn Now</a>
+        <a href="${url}" target="_blank" style="background:#f57c00; color:white; padding:10px 16px; border-radius:6px; text-decoration:none; display:inline-block;">👉 Learn & Earn Now</a>
       </div>
     `;
     return box;
   };
 
   const injectCTAs = () => {
-    const article = document.querySelector('.post-body');
-    if (!article || window.location.pathname === "/") return;
+    const article = document.querySelector('.post-body.entry-content');
+    if (!article) return;
 
     const paras = article.querySelectorAll('p');
     if (paras.length < 4) return;
 
-    // Random CTAs
     const cta1 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
     const cta2 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
     const cta3 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
 
-    // Insert after 4th paragraph
-    paras[3].parentNode.insertBefore(createBox(cta1.title, cta1.url), paras[4]);
-
-    // Insert in middle
-    const midIndex = Math.floor(paras.length / 2);
-    paras[midIndex].parentNode.insertBefore(createBox(cta2.title, cta2.url), paras[midIndex]);
-
-    // Insert at end
+    if (paras[3]) paras[3].after(createBox(cta1.title, cta1.url));
+    const mid = Math.floor(paras.length / 2);
+    if (paras[mid]) paras[mid].after(createBox(cta2.title, cta2.url));
     article.appendChild(createBox(cta3.title, cta3.url));
   };
 
-  window.addEventListener('load', injectCTAs);
+  document.addEventListener('DOMContentLoaded', injectCTAs);
 })();
