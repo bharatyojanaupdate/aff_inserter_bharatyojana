@@ -1,59 +1,53 @@
-(function() {
+(function () {
   const dummyLinks = [
-    { title: "📘 Learn Blogging & Earn Daily", url: "https://example.com/blogging" },
-    { title: "💰 India's #1 Earning App", url: "https://example.com/app1" },
-    { title: "📚 Sarkari Naukri Prep Bundle", url: "https://example.com/govtprep" },
-    { title: "🚀 AI Tool for Passive Income", url: "https://example.com/aitool" },
-    { title: "📈 Start Freelancing Today", url: "https://example.com/freelance" },
-    { title: "🏦 Best Finance Tools for 2025", url: "https://example.com/finance" },
-    { title: "🔍 Government Scheme Finder", url: "https://example.com/schemes" },
-    { title: "🎥 Make ₹2000/Day from YouTube Shorts", url: "https://example.com/youtube" },
-    { title: "🧠 AI Notes Generator for Students", url: "https://example.com/ainotes" },
-    { title: "📌 GST & ITR Filing Made Easy", url: "https://example.com/gstfiling" },
-    { title: "💻 Work-from-Home Starter Kit", url: "https://example.com/wfh" },
-    { title: "📊 Create & Sell Ebooks Easily", url: "https://example.com/ebook" },
-    { title: "✍️ Resume Builder + Job Links", url: "https://example.com/resume" },
-    { title: "📷 AI Image & Video Generator", url: "https://example.com/aivideo" },
-    { title: "📋 Free Exam Alerts on WhatsApp", url: "https://example.com/exam" },
-    { title: "💼 Start Affiliate Marketing", url: "https://example.com/affiliate" },
-    { title: "🏫 Get Free Courses with Certificate", url: "https://example.com/courses" },
-    { title: "📥 PDF Tools for Govt Forms", url: "https://example.com/pdf" },
-    { title: "🛠 Free Tools for Bloggers", url: "https://example.com/blogtools" },
-    { title: "🗂 100+ Sarkari Yojana PDFs", url: "https://example.com/sarkarilist" },
-    { title: "📡 Earn with WhatsApp Broadcast", url: "https://example.com/whatsapp" },
-    { title: "📢 Start Your News Page & Monetize", url: "https://example.com/news" },
-    { title: "📱 Android Apps to Earn ₹", url: "https://example.com/android" },
-    { title: "🔐 Safe Password Generator Tool", url: "https://example.com/password" },
-    { title: "🔧 IFSC / HSN / Tax Tools", url: "https://example.com/toolkit" }
+    { title: "🚀 Boost Your Income with This Tool", url: "https://example.com/1" },
+    { title: "🔥 Don’t Miss These Free Govt Tools", url: "https://example.com/2" },
+    { title: "💡 Earn From Home Using Smart Ideas", url: "https://example.com/3" },
+    { title: "📘 Learn Blogging and Start Earning", url: "https://example.com/4" },
+    { title: "📢 Govt Job Alerts & Tools", url: "https://example.com/5" },
+    { title: "📊 Track Schemes with 1 Click", url: "https://example.com/6" },
+    { title: "🎓 Free Courses & Certifications", url: "https://example.com/7" },
+    { title: "📱 Earn From Apps in Your Free Time", url: "https://example.com/8" },
+    { title: "📥 Tools to Download PDFs Easily", url: "https://example.com/9" },
+    { title: "🧠 AI Tool That Writes For You", url: "https://example.com/10" },
+    // add more up to 25
   ];
 
-  const createBox = (title, url) => {
-    const box = document.createElement("div");
-    box.innerHTML = `
-      <div style="border:1px solid #ccc; background:#fdf9f0; padding:15px; margin:20px 0; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
-        <strong style="font-size:18px; color:#333;">${title}</strong><br><br>
-        <a href="${url}" target="_blank" style="background:#f57c00; color:white; padding:10px 16px; border-radius:6px; text-decoration:none; display:inline-block;">👉 Learn & Earn Now</a>
+  function getRandomBox() {
+    const random = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <div style="border:1px solid #eee; background:#fffbe7; padding:14px; margin:20px 0; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <h3 style="margin:0 0 10px; font-size:17px; color:#b35400;">${random.title}</h3>
+        <a href="${random.url}" target="_blank" style="background:#b35400;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-block;">👉 Click to Explore</a>
       </div>
     `;
-    return box;
-  };
+    return div;
+  }
 
-  const injectCTAs = () => {
-    const article = document.querySelector('.post-body.entry-content');
-    if (!article) return;
+  function injectSmartCTAs() {
+    const body = document.querySelector('.post-body');
+    if (!body) return;
 
-    const paras = article.querySelectorAll('p');
-    if (paras.length < 4) return;
+    const text = body.innerText.trim();
+    const lines = text.split('\n').filter(Boolean);
 
-    const cta1 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
-    const cta2 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
-    const cta3 = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
+    const insertAfter = (lineIndex, box) => {
+      const htmlLines = body.innerHTML.split(/<br\s*\/?>/gi);
+      if (lineIndex >= htmlLines.length) lineIndex = htmlLines.length - 1;
+      htmlLines.splice(lineIndex, 0, box.outerHTML);
+      body.innerHTML = htmlLines.join("<br>");
+    };
 
-    if (paras[3]) paras[3].after(createBox(cta1.title, cta1.url));
-    const mid = Math.floor(paras.length / 2);
-    if (paras[mid]) paras[mid].after(createBox(cta2.title, cta2.url));
-    article.appendChild(createBox(cta3.title, cta3.url));
-  };
+    const box1 = getRandomBox();
+    const box2 = getRandomBox();
+    const box3 = getRandomBox();
 
-  document.addEventListener('DOMContentLoaded', injectCTAs);
+    // Approx positions
+    insertAfter(4, box1); // after 4 lines
+    insertAfter(Math.floor(lines.length / 2), box2); // middle
+    insertAfter(lines.length - 1, box3); // end
+  }
+
+  document.addEventListener("DOMContentLoaded", injectSmartCTAs);
 })();
