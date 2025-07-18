@@ -28,22 +28,25 @@
     const content = document.querySelector('.post-body') || document.querySelector('.entry-content');
     if (!content) return;
 
-    let htmlParts = content.innerHTML.split(/<br\s*\/?>/i);
-    const total = htmlParts.length;
+    let text = content.innerHTML;
 
-    if (total < 3) return; // skip very short content
+    // Basic safeguard: not too short
+    if (text.length < 200) return;
 
-    // Generate boxes
-    const box1 = getRandomBox().outerHTML;
-    const box2 = getRandomBox().outerHTML;
-    const box3 = getRandomBox().outerHTML;
+    const lines = text.split(/<\/p>|<br\s*\/?>|<\/div>|<\/span>/i);
+    const insertAt = [];
 
-    // Insert after 4th line, middle, and end
-    htmlParts.splice(4, 0, box1);
-    htmlParts.splice(Math.floor(total / 2), 0, box2);
-    htmlParts.push(box3);
+    // Try 3 safe positions
+    if (lines.length >= 4) insertAt.push(4);
+    if (lines.length >= 10) insertAt.push(Math.floor(lines.length / 2));
+    insertAt.push(lines.length - 1);
 
-    content.innerHTML = htmlParts.join("<br>");
+    const boxes = [getRandomBox(), getRandomBox(), getRandomBox()];
+    insertAt.forEach((pos, i) => {
+      lines.splice(pos, 0, boxes[i].outerHTML);
+    });
+
+    content.innerHTML = lines.join("<br>");
   }
 
   document.addEventListener("DOMContentLoaded", injectCTAs);
