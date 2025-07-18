@@ -7,55 +7,52 @@
 
   const affLinks = [
     { title: "Boost Your Digital Income!", url: "https://example.com/1" },
-    { title: "Get Your Free Govt Toolkit", url: "https://example.com/2" },
-    { title: "AI Skills for CSC VLEs", url: "https://example.com/3" },
-    { title: "Top 10 Rural Side Hustles", url: "https://example.com/4" },
-    { title: "Become a Certified Freelancer", url: "https://example.com/5" }
+    { title: "Free Govt Toolkit for VLEs", url: "https://example.com/2" },
+    { title: "Earn via CSC Skills", url: "https://example.com/3" },
+    { title: "Top Rural AI Tools", url: "https://example.com/4" },
+    { title: "Freelance Course for Beginners", url: "https://example.com/5" },
+    { title: "Govt eBooks You Must Read", url: "https://example.com/6" },
+    { title: "Top Grants You Didn't Know", url: "https://example.com/7" }
   ];
 
   const pick = (arr) => arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
 
-  const createBox = (title, url, style) => {
-    const box = document.createElement("div");
-    box.innerHTML = `
-      <div style="max-width:100%;margin:20px auto;padding:16px;border:2px dashed ${style.border};background:${style.bg};border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.08);text-align:center;">
-        <strong style="font-size:18px;color:${style.btn};">${style.emoji} ${title}</strong><br>
-        <a href="${url}" target="_blank" style="display:inline-block;margin-top:12px;padding:10px 22px;background:${style.btn};color:#fff;border-radius:30px;text-decoration:none;font-weight:bold;">👉 Grab Now</a>
-      </div>`;
-    return box;
+  const createBox = (data, style) => `
+    <div style="max-width:100%;margin:16px 0;padding:16px;border:2px dashed ${style.border};background:${style.bg};border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.08);text-align:center;">
+      <strong style="font-size:18px;color:${style.btn};">${style.emoji} ${data.title}</strong><br>
+      <a href="${data.url}" target="_blank" style="display:inline-block;margin-top:12px;padding:10px 22px;background:${style.btn};color:#fff;border-radius:30px;text-decoration:none;font-weight:bold;">👉 Grab Now</a>
+    </div>
+  `;
+
+  const inject = () => {
+    const cards = document.querySelectorAll(".card");
+    if (!cards || cards.length < 2) return;
+
+    const boxWrap = document.createElement("div");
+    boxWrap.style.margin = "20px 0";
+
+    for (let i = 0; i < 3 && affLinks.length && styles.length; i++) {
+      const data = pick(affLinks);
+      const style = pick(styles);
+      boxWrap.innerHTML += createBox(data, style);
+    }
+
+    cards[1].insertAdjacentElement("afterend", boxWrap);
+    console.log("✅ Injected 3 stacked affiliate boxes in one place.");
   };
 
-  function injectBoxes() {
-    const cards = document.querySelectorAll(".card");
-    if (!cards || cards.length < 3) return;
-
-    const indexes = [1, 3, cards.length - 2];
-    let count = 0;
-
-    indexes.forEach(i => {
-      if (cards[i] && affLinks.length && styles.length) {
-        const data = pick(affLinks);
-        const style = pick(styles);
-        const box = createBox(data.title, data.url, style);
-        cards[i].insertAdjacentElement("afterend", box);
-        count++;
-      }
-    });
-
-    console.log(`✅ Injected ${count} visually distinct affiliate box(es)`);
-  }
-
-  // Smart wait loop to handle Blogger delays
+  // Smart wait loop for slow Blogger themes
   let tries = 0;
-  const wait = setInterval(() => {
-    const ready = document.querySelectorAll(".card").length >= 3;
-    const hasText = [...document.querySelectorAll(".card")].some(c => c.innerText.length > 50);
-    if (ready && hasText) {
-      clearInterval(wait);
-      injectBoxes();
+  const timer = setInterval(() => {
+    const cards = document.querySelectorAll(".card");
+    const contentReady = Array.from(cards).some(c => c.innerText.length > 50);
+
+    if (cards.length >= 2 && contentReady) {
+      clearInterval(timer);
+      inject();
     } else if (++tries > 10) {
-      clearInterval(wait);
-      console.warn("⚠️ Affiliate injector gave up after 10 tries.");
+      clearInterval(timer);
+      console.warn("⚠️ Failed to inject after 10 tries.");
     }
   }, 700);
 })();
