@@ -19,17 +19,20 @@
     return box;
   };
 
-  function injectMultipleAffiliates() {
+  function injectMultipleSafely() {
     const cards = document.querySelectorAll(".card");
-    if (cards.length >= 5) {
-      const [box1, box2, box3] = [pickRandom(), pickRandom(), pickRandom()].map(createBox);
-      cards[1].insertAdjacentElement("afterend", box1); // after card #2
-      cards[3].insertAdjacentElement("afterend", box2); // after card #4
-      cards[cards.length - 1].insertAdjacentElement("beforebegin", box3); // before last card
-    }
+
+    if (cards.length < 2) return; // at least two .card blocks needed
+
+    const positions = [1, 3, cards.length - 2]; // safely target cards 2nd, 4th, before last
+    positions.forEach((pos, index) => {
+      if (cards[pos]) {
+        const link = pickRandom();
+        const box = createBox(link);
+        cards[pos].insertAdjacentElement("afterend", box);
+      }
+    });
   }
 
-  window.addEventListener("load", function () {
-    setTimeout(injectMultipleAffiliates, 800);
-  });
+  window.addEventListener("load", () => setTimeout(injectMultipleSafely, 800));
 })();
