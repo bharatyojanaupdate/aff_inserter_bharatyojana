@@ -24,30 +24,29 @@
     return box;
   }
 
-  function injectCTAs() {
+  function injectAffiliateBoxes() {
     const content = document.querySelector('.post-body') || document.querySelector('.entry-content');
     if (!content) return;
 
-    let text = content.innerHTML;
+    const children = Array.from(content.children);
+    if (children.length === 0) return;
 
-    // Basic safeguard: not too short
-    if (text.length < 200) return;
+    const box1 = getRandomBox();
+    const box2 = getRandomBox();
+    const box3 = getRandomBox();
 
-    const lines = text.split(/<\/p>|<br\s*\/?>|<\/div>|<\/span>/i);
-    const insertAt = [];
+    // Insert after 4th element (or 1st if less)
+    const index1 = children.length >= 5 ? 4 : 1;
+    if (children[index1]) content.insertBefore(box1, children[index1].nextSibling);
 
-    // Try 3 safe positions
-    if (lines.length >= 4) insertAt.push(4);
-    if (lines.length >= 10) insertAt.push(Math.floor(lines.length / 2));
-    insertAt.push(lines.length - 1);
+    // Insert in the middle
+    const midIndex = Math.floor(children.length / 2);
+    if (children[midIndex]) content.insertBefore(box2, children[midIndex].nextSibling);
 
-    const boxes = [getRandomBox(), getRandomBox(), getRandomBox()];
-    insertAt.forEach((pos, i) => {
-      lines.splice(pos, 0, boxes[i].outerHTML);
-    });
-
-    content.innerHTML = lines.join("<br>");
+    // Insert before last element
+    const lastIndex = children.length - 1;
+    if (children[lastIndex]) content.insertBefore(box3, children[lastIndex].nextSibling);
   }
 
-  document.addEventListener("DOMContentLoaded", injectCTAs);
+  document.addEventListener("DOMContentLoaded", injectAffiliateBoxes);
 })();
