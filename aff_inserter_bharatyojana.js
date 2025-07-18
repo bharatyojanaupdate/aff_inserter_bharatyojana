@@ -15,8 +15,9 @@
   function getRandomBox() {
     const item = dummyLinks[Math.floor(Math.random() * dummyLinks.length)];
     const box = document.createElement("div");
+    box.style.cssText = "width:100%;display:block;clear:both;";
     box.innerHTML = `
-      <div style="border:1px solid #ccc; background:#fff9f0; padding:14px; margin:20px 0; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+      <div style="width:100%;box-sizing:border-box;border:1px solid #ccc; background:#fff9f0; padding:16px; margin:20px auto; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05); max-width:100%;">
         <h3 style="margin-top:0; font-size:18px; color:#b35400;">${item.title}</h3>
         <a href="${item.url}" target="_blank" style="background:#b35400;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;display:inline-block;">👉 Learn & Earn Now</a>
       </div>
@@ -28,24 +29,20 @@
     const content = document.querySelector('.post-body') || document.querySelector('.entry-content');
     if (!content) return;
 
-    const children = Array.from(content.children);
-    if (children.length === 0) return;
+    const children = Array.from(content.children).filter(el => el.offsetHeight > 0 && el.innerText.trim().length > 0);
+    if (children.length < 2) return;
 
     const box1 = getRandomBox();
     const box2 = getRandomBox();
     const box3 = getRandomBox();
 
-    // Insert after 4th element (or 1st if less)
-    const index1 = children.length >= 5 ? 4 : 1;
-    if (children[index1]) content.insertBefore(box1, children[index1].nextSibling);
+    const index1 = Math.min(3, children.length - 1);
+    const index2 = Math.floor(children.length / 2);
+    const index3 = children.length - 1;
 
-    // Insert in the middle
-    const midIndex = Math.floor(children.length / 2);
-    if (children[midIndex]) content.insertBefore(box2, children[midIndex].nextSibling);
-
-    // Insert before last element
-    const lastIndex = children.length - 1;
-    if (children[lastIndex]) content.insertBefore(box3, children[lastIndex].nextSibling);
+    content.insertBefore(box1, children[index1]?.nextSibling || null);
+    content.insertBefore(box2, children[index2]?.nextSibling || null);
+    content.insertBefore(box3, children[index3]?.nextSibling || null);
   }
 
   document.addEventListener("DOMContentLoaded", injectAffiliateBoxes);
