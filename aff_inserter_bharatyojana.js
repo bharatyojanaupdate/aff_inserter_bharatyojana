@@ -19,10 +19,10 @@
     return box;
   };
 
-  function tryInject() {
+  function smartInject() {
     const cards = document.querySelectorAll(".card");
 
-    if (cards.length < 3) return;
+    if (!cards || cards.length < 2) return console.warn("⚠️ Not enough .card elements found.");
 
     const positions = [1, 3, cards.length - 2];
     let injected = 0;
@@ -35,16 +35,23 @@
         injected++;
       }
     });
+
+    console.log(`✅ Injected ${injected} affiliate box(es)`);
   }
 
-  // Repeatedly check until it works or 5 tries max
+  // New smart wait loop: wait until DOM is stable and .card elements are populated
   let tries = 0;
+  const maxTries = 10;
   const interval = setInterval(() => {
-    tries++;
-    if (tries > 5) return clearInterval(interval);
-    if (document.querySelectorAll(".card").length > 2) {
-      tryInject();
+    const cards = document.querySelectorAll(".card");
+    const contentReady = Array.from(cards).some(card => card.innerText.length > 50);
+
+    if (cards.length >= 3 && contentReady) {
       clearInterval(interval);
+      smartInject();
+    } else if (++tries >= maxTries) {
+      clearInterval(interval);
+      console.warn("⚠️ Affiliate injector timed out after multiple attempts.");
     }
-  }, 500);
+  }, 700); // Check every 700ms, up to ~7 seconds max
 })();
