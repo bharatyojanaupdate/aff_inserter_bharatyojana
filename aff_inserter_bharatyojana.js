@@ -1,35 +1,38 @@
 (function () {
-  const dummyLinks = [
-    { title: "🚀 Boost Your Income!", url: "https://example.com/1" },
-    { title: "🔥 Don’t Miss These Free Govt Tools", url: "https://example.com/2" },
-    { title: "💡 Learn & Earn Smartly", url: "https://example.com/3" }
+  const links = [
+    { title: "🚀 Start Earning with This Free Tool", url: "https://example.com/1" },
+    { title: "📘 Govt Support Scheme – Claim Benefits", url: "https://example.com/2" },
+    { title: "💡 Learn & Earn with Smart Apps", url: "https://example.com/3" }
   ];
 
-  function createBox(item) {
-    const wrap = document.createElement("div");
-    wrap.style.cssText = "width:100%;margin:30px 0;padding:0;clear:both;display:block;";
-    wrap.innerHTML = `
-      <div style="max-width:800px;margin:auto;border:1px solid #ccc;background:#fff9f0;padding:16px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-        <h3 style="margin:0 0 10px;color:#b35400;">${item.title}</h3>
-        <a href="${item.url}" target="_blank" style="display:inline-block;background:#b35400;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;">👉 Learn & Earn Now</a>
-      </div>`;
-    return wrap;
-  }
+  const random = links[Math.floor(Math.random() * links.length)];
 
-  function injectBoxes() {
-    const post = document.querySelector('.post-body.entry-content');
-    if (!post) return;
+  const box = document.createElement("div");
+  box.innerHTML = `
+    <div id="aff-float-cta" style="position:fixed;bottom:-200px;left:50%;transform:translateX(-50%);background:#fff9f0;border:1px solid #ccc;box-shadow:0 0 8px rgba(0,0,0,0.1);border-radius:8px;padding:16px 20px;max-width:320px;width:90%;z-index:9999;transition:bottom 0.5s ease;">
+      <strong style="color:#b35400;font-size:16px;">${random.title}</strong><br>
+      <a href="${random.url}" target="_blank" style="margin-top:8px;display:inline-block;background:#b35400;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;">👉 Grab It Now</a>
+      <span id="aff-close-btn" style="position:absolute;top:4px;right:8px;cursor:pointer;color:#999;">✖</span>
+    </div>
+  `;
 
-    const parent = post.parentNode;
-    const box1 = createBox(dummyLinks[Math.floor(Math.random() * dummyLinks.length)]);
-    const box2 = createBox(dummyLinks[Math.floor(Math.random() * dummyLinks.length)]);
-    const box3 = createBox(dummyLinks[Math.floor(Math.random() * dummyLinks.length)]);
+  document.body.appendChild(box);
 
-    // Insert after post-body instead of inside it
-    parent.insertBefore(box1, post.nextSibling);
-    parent.insertBefore(box2, box1.nextSibling);
-    parent.insertBefore(box3, box2.nextSibling);
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const trigger = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const postHeight = document.body.scrollHeight / 2;
 
-  document.addEventListener("DOMContentLoaded", injectBoxes);
+      if (scrollY > postHeight) {
+        document.getElementById("aff-float-cta").style.bottom = "20px";
+        window.removeEventListener("scroll", trigger);
+      }
+    };
+
+    document.getElementById("aff-close-btn").onclick = () => {
+      document.getElementById("aff-float-cta").style.display = "none";
+    };
+
+    window.addEventListener("scroll", trigger);
+  });
 })();
