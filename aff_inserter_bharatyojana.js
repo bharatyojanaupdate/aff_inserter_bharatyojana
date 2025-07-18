@@ -19,20 +19,32 @@
     return box;
   };
 
-  function injectMultipleSafely() {
+  function tryInject() {
     const cards = document.querySelectorAll(".card");
 
-    if (cards.length < 2) return; // at least two .card blocks needed
+    if (cards.length < 3) return;
 
-    const positions = [1, 3, cards.length - 2]; // safely target cards 2nd, 4th, before last
-    positions.forEach((pos, index) => {
-      if (cards[pos]) {
+    const positions = [1, 3, cards.length - 2];
+    let injected = 0;
+
+    positions.forEach(pos => {
+      if (cards[pos] && injected < 3) {
         const link = pickRandom();
         const box = createBox(link);
         cards[pos].insertAdjacentElement("afterend", box);
+        injected++;
       }
     });
   }
 
-  window.addEventListener("load", () => setTimeout(injectMultipleSafely, 800));
+  // Repeatedly check until it works or 5 tries max
+  let tries = 0;
+  const interval = setInterval(() => {
+    tries++;
+    if (tries > 5) return clearInterval(interval);
+    if (document.querySelectorAll(".card").length > 2) {
+      tryInject();
+      clearInterval(interval);
+    }
+  }, 500);
 })();
